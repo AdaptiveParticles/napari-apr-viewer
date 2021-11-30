@@ -1,10 +1,10 @@
 # napari-apr-viewer
 
-[![License](https://img.shields.io/pypi/l/napari-apr-viewer.svg?color=green)](https://github.com/joeljonsson/napari-apr-viewer/raw/main/LICENSE)
+[![License](https://img.shields.io/pypi/l/napari-apr-viewer.svg?color=green)](https://github.com/AdaptiveParticles/napari-apr-viewer/raw/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/napari-apr-viewer.svg?color=green)](https://pypi.org/project/napari-apr-viewer)
 [![Python Version](https://img.shields.io/pypi/pyversions/napari-apr-viewer.svg?color=green)](https://python.org)
-[![tests](https://github.com/joeljonsson/napari-apr-viewer/workflows/tests/badge.svg)](https://github.com/joeljonsson/napari-apr-viewer/actions)
-[![codecov](https://codecov.io/gh/joeljonsson/napari-apr-viewer/branch/main/graph/badge.svg)](https://codecov.io/gh/joeljonsson/napari-apr-viewer)
+[![tests](https://github.com/AdaptiveParticles/napari-apr-viewer/workflows/tests/badge.svg)](https://github.com/AdaptiveParticles/napari-apr-viewer/actions)
+[![codecov](https://codecov.io/gh/AdaptiveParticles/napari-apr-viewer/branch/main/graph/badge.svg)](https://codecov.io/gh/AdaptiveParticles/napari-apr-viewer)
 [![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/napari-apr-viewer)](https://napari-hub.org/plugins/napari-apr-viewer)
 
 A simple plugin to view APR images in napari
@@ -13,13 +13,6 @@ A simple plugin to view APR images in napari
 
 This [napari] plugin was generated with [Cookiecutter] using [@napari]'s [cookiecutter-napari-plugin] template.
 
-<!--
-Don't miss the full getting started guide to set up your new package:
-https://github.com/napari/cookiecutter-napari-plugin#getting-started
-
-and review the napari docs for plugin developers:
-https://napari.org/docs/plugins/index.html
--->
 
 ## Installation
 
@@ -59,3 +52,5 @@ If you encounter any problems, please [file an issue] along with a detailed desc
 [tox]: https://tox.readthedocs.io/en/latest/
 [pip]: https://pypi.org/project/pip/
 [PyPI]: https://pypi.org/
+
+[file an issue]: https://github.com/AdaptiveParticles/napari-apr-viewer/issues
