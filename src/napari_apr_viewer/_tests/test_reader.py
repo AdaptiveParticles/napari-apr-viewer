@@ -1,17 +1,15 @@
+import os
 import numpy as np
+import pyapr
 from napari_apr_viewer import napari_get_reader
 
 
 # tmp_path is a pytest fixture
 def test_reader(tmp_path):
-    """An example of how you might test your plugin."""
+    file_dir = os.path.dirname(os.path.abspath(__file__))
+    my_test_file = os.path.join(file_dir, 'files', 'spheres_tiny.apr')
 
-    # write some fake data using your supported file format
-    my_test_file = str(tmp_path / "myfile.npy")
-    original_data = np.random.rand(20, 20)
-    np.save(my_test_file, original_data)
-
-    # try to read it back in
+    # get reader
     reader = napari_get_reader(my_test_file)
     assert callable(reader)
 
@@ -21,8 +19,13 @@ def test_reader(tmp_path):
     layer_data_tuple = layer_data_list[0]
     assert isinstance(layer_data_tuple, tuple) and len(layer_data_tuple) > 0
 
-    # make sure it's the same as it started
-    np.testing.assert_allclose(original_data, layer_data_tuple[0])
+    # read the file using pyapr
+    apr, parts = pyapr.io.read(my_test_file)
+
+    # make sure it's the same
+    assert layer_data_tuple[0].apr.total_number_particles() == apr.total_number_particles() > 0
+    assert len(layer_data_tuple[0].parts) == len(parts) == apr.total_number_particles()
+    np.testing.assert_allclose(np.array(parts), np.array(layer_data_tuple[0].parts))
 
 
 def test_get_reader_pass():

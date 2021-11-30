@@ -1,53 +1,39 @@
-"""
-This module is an example of a barebones numpy reader plugin for napari.
-
-It implements the ``napari_get_reader`` hook specification, (to create
-a reader plugin) but your plugin may choose to implement any of the hook
-specifications offered by napari.
-see: https://napari.org/docs/dev/plugins/hook_specifications.html
-
-Replace code below accordingly.  For complete documentation see:
-https://napari.org/docs/dev/plugins/for_plugin_developers.html
-"""
-import numpy as np
+import pyapr
+from typing import List, Any, Optional, Union, Tuple, Dict
+from napari.types import ReaderFunction
 from napari_plugin_engine import napari_hook_implementation
 
 
 @napari_hook_implementation
-def napari_get_reader(path):
-    """A basic implementation of the napari_get_reader hook specification.
+def napari_get_reader(path: Union[str, List[str]]) -> Optional[ReaderFunction]:
+    """
+    Return a function capable of reading APR files into napari layer data.
 
     Parameters
     ----------
     path : str or list of str
-        Path to file, or list of paths.
+        Path to a '.apr' file, or list of such paths.
 
     Returns
     -------
     function or None
-        If the path is a recognized format, return a function that accepts the
+        If the path is of the correct format, return a function that accepts the
         same path or list of paths, and returns a list of layer data tuples.
+        Otherwise returns ``None``.
     """
     if isinstance(path, list):
-        # reader plugins may be handed single path, or a list of paths.
-        # if it is a list, it is assumed to be an image stack...
-        # so we are only going to look at the first file.
-        path = path[0]
-
-    # if we know we cannot read the file, we immediately return None.
-    if not path.endswith(".npy"):
-        return None
-
-    # otherwise we return the *function* that can read ``path``.
-    return reader_function
+        for p in path:
+            if not isinstance(p, str) or p.endswith('.apr'):
+                return None
+    elif isinstance(path, str):
+        if not path.endswith('.apr'):
+            return None
+    return apr_reader
 
 
-def reader_function(path):
-    """Take a path or list of paths and return a list of LayerData tuples.
-
-    Readers are expected to return data as a list of tuples, where each tuple
-    is (data, [add_kwargs, [layer_type]]), "add_kwargs" and "layer_type" are
-    both optional.
+def apr_reader(path: Union[str, List[str]]) -> List[Tuple[Any, Dict, str]]:
+    """
+    Take a path or list of paths to '.apr' files and return a list of LayerData tuples.
 
     Parameters
     ----------
@@ -58,21 +44,24 @@ def reader_function(path):
     -------
     layer_data : list of tuples
         A list of LayerData tuples where each tuple in the list contains
-        (data, metadata, layer_type), where data is a numpy array, metadata is
+        (data, metadata, layer_type), where data is an APRSlicer, metadata is
         a dict of keyword arguments for the corresponding viewer.add_* method
-        in napari, and layer_type is a lower-case string naming the type of layer.
-        Both "meta", and "layer_type" are optional. napari will default to
-        layer_type=="image" if not provided
+        in napari, and layer_type is a lower-case string naming the type of layer
+        (currently always 'image').
     """
-    # handle both a string and a list of strings
-    paths = [path] if isinstance(path, str) else path
-    # load all files into array
-    arrays = [np.load(_path) for _path in paths]
-    # stack arrays into single array
-    data = np.squeeze(np.stack(arrays))
 
-    # optional kwargs for the corresponding viewer.add_* method
-    add_kwargs = {}
+    def get_kwargs(apr, parts):
+        par = apr.get_parameters()
+        return {'rgb': False,
+                'multiscale': False,
+                'contrast_limits': [parts.min(), parts.max()],
+                'scale': [par.dz, par.dx, par.dy]}
 
-    layer_type = "image"  # optional, default is "image"
-    return [(data, add_kwargs, layer_type)]
+    def read_apr(path: str):
+        apr, parts = pyapr.io.read(path)
+        return pyapr.data_containers.APRSlicer(apr, parts)
+
+    if isinstance(path, str):
+        path = [path]
+    data = [read_apr(p) for p in path]
+    return [(dd, get_kwargs(dd.apr, dd.parts), 'image') for dd in data]
