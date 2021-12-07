@@ -13,7 +13,7 @@ class DTypes(Enum):
 
 
 @magic_factory(call_button="Run",
-               relative_error={'widget_type': 'FloatSlider', 'min': 0.0, 'max': 1.0, 'step': 0.01})
+               relative_error={'widget_type': 'FloatSlider', 'min': 0.0, 'max': 0.5, 'step': 0.01})
 def convert_image_to_apr(
         layer: "napari.types.ImageData",
         data_type: DTypes,
@@ -26,7 +26,6 @@ def convert_image_to_apr(
         sigma_threshold: float = 0.0,
         grad_threshold: float = 0.0,
         auto_find_sigma_and_grad_threshold: bool = True,
-        inverted_intensity: bool = False,
         output_name: str = 'conversion_result'
 ) -> "napari.types.LayerDataTuple":
     """
@@ -51,8 +50,7 @@ def convert_image_to_apr(
     parts = pyapr.ShortParticles() if data_type.value == 'uint16' else pyapr.FloatParticles()
 
     layer = layer.astype(data_type.value)
-    print(layer.shape)
-    converter.get_apr(apr, layer.max()-layer if inverted_intensity else layer)
+    converter.get_apr(apr, layer)
     parts.sample_image(apr, layer)
 
     print('Computational ratio (#pixels / #particles): {:.2f}'.format(apr.computational_ratio()))
