@@ -13,7 +13,24 @@ class DTypes(Enum):
 
 
 @magic_factory(call_button="Run",
-               relative_error={'widget_type': 'FloatSlider', 'min': 0.0, 'max': 0.5, 'step': 0.01})
+               relative_error={'widget_type': 'FloatSlider', 'min': 0.0, 'max': 0.5, 'step': 0.01,
+                               'tooltip': 'Sets the error bound in the reconstruction condition of the APR. '
+                                          'The input pixel values can be reconstructed from the APR with an '
+                                          'error (relative to the \"local intensity scale\") of at most this '
+                                          'value.'},
+               smoothing={'tooltip': 'Controls the level of B-spline smoothing used in internal steps '
+                                     '(e.g. to compute the signal gradient). Higher values mean more '
+                                     'smoothing, while 0 corresponds to no smoothing. Typical range: 0-10. '},
+               intensity_threshold={'tooltip': 'The image gradient is set to 0 in regions of lower intensity '
+                                               'than this threshold.'},
+               sigma_threshold={'tooltip': 'The \"local intensity scale\" is clipped from below to this value. '},
+               grad_threshold={'tooltip': 'Gradient values below this value are set to 0.'},
+               auto_find_sigma_and_grad_threshold={'tooltip': 'Automatically compute \'sigma_threshold\' and '
+                                                              '\'grad_threshold\' using Li thresholding on the '
+                                                              'local intensity scale and gradient. Regions where '
+                                                              'the intensity is below \'intensity_threshold\' '
+                                                              'are ignored in this process.'},
+               output_name={'tooltip': 'Name of the resulting napari image layer.'})
 def convert_image_to_apr(
         layer: "napari.types.ImageData",
         data_type: DTypes,
