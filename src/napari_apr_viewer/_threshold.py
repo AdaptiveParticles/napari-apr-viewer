@@ -7,9 +7,11 @@ if TYPE_CHECKING:
 
 
 @magic_factory(call_button="Run",
-               threshold={'widget_type': 'FloatSlider', 'min': 0, 'max': 10000})
-def threshold(data: "napari.types.ImageData", threshold: float) -> "napari.types.LabelsData":
+               threshold={'widget_type': 'FloatSpinBox', 'max': 65536})
+def threshold(data: "napari.types.ImageData", threshold: float) -> "napari.types.LayerDataTuple":
     """Threshold an image and return a mask."""
     if not isinstance(data, pyapr.APRSlicer):
-        return (data > threshold).astype(int)
-    return pyapr.APRSlicer(data.apr, data.parts.copy() > threshold, tree_mode='max')
+        return (data > threshold).astype(int), {}, 'labels'
+    par = data.apr.get_parameters()
+    meta = {'scale': [par.dz, par.dx, par.dy]}
+    return pyapr.APRSlicer(data.apr, data.parts.copy() > threshold, tree_mode='max'), meta, 'labels'
