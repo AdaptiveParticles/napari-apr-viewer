@@ -17,4 +17,6 @@ def convert_apr_to_image(
         return None
     par = layer.apr.get_parameters()
     scale = [x * 2**(-layer.patch.level_delta) for x in (par.dz, par.dx, par.dy)]
+    shape = layer.apr.shape()
+    scale = [scale[i] for i in range(3) if shape[i] > 1]
     return layer[:, :, :], {'name': output_name, 'scale': scale}, 'image'
