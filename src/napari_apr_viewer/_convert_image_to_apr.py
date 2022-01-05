@@ -22,9 +22,11 @@ class DTypes(Enum):
                                      '(e.g. to compute the signal gradient). Higher values mean more '
                                      'smoothing, while 0 corresponds to no smoothing. Typical range: 0-10. '},
                intensity_threshold={'tooltip': 'The image gradient is set to 0 in regions of lower intensity '
-                                               'than this threshold.'},
-               sigma_threshold={'tooltip': 'The \"local intensity scale\" is clipped from below to this value. '},
-               grad_threshold={'tooltip': 'Gradient values below this value are set to 0.'},
+                                               'than this threshold.', 'min': 0, 'max': 65535},
+               sigma_threshold={'tooltip': 'The \"local intensity scale\" is clipped from below to this value. ',
+                                'min': 0, 'max': 65535},
+               grad_threshold={'tooltip': 'Gradient values below this value are set to 0.',
+                               'min': 0, 'max': 65535},
                auto_find_sigma_and_grad_threshold={'tooltip': 'Automatically compute \'sigma_threshold\' and '
                                                               '\'grad_threshold\' using Li thresholding on the '
                                                               'local intensity scale and gradient. Regions where '
