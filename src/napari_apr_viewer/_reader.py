@@ -73,11 +73,13 @@ def apr_reader(path: Union[str, List[str]]) -> List[Tuple[Any, Dict, str]]:
         apr = pyapr.io.read_apr(path)
         base_name = path.split(os.path.sep)[-1].split('.')[0]
         particle_data = [(pyapr.io.read_particles(path, parts_name=p), p) for p in particle_fields]
-        return [(pyapr.data_containers.APRSlicer(apr, parts),
+        layer_types = ['labels' if (('label' in name or 'segmentation' in name)
+                                    and not isinstance(parts, pyapr.FloatParticles))
+                       else 'image' for parts, name in particle_data]
+        return [(pyapr.data_containers.APRSlicer(apr, parts, tree_mode='max' if ltype == 'labels' else 'mean'),
                  '{}:{}'.format(base_name, name),
-                 'labels' if (('label' in name or 'segmentation' in name)
-                              and not isinstance(parts, pyapr.FloatParticles)) else 'image')
-                for parts, name in particle_data]
+                 ltype)
+                for (parts, name), ltype in zip(particle_data, layer_types)]
 
     if isinstance(path, str):
         path = [path]

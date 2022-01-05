@@ -56,7 +56,7 @@ class APRViewer(QWidget):
     def _changeMode(self, mode: [int, str]):
         mode = mode if isinstance(mode, str) else self.modes[mode]
         for layer in self.viewer.layers:
-            if isinstance(layer.data, pyapr.APRSlicer):
+            if isinstance(layer.data, pyapr.APRSlicer) and isinstance(layer, napari.layers.Image):
                 # set reconstruction mode
                 layer.data.mode = mode
 
