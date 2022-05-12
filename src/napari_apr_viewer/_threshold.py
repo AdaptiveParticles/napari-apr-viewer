@@ -14,4 +14,5 @@ def threshold(data: "napari.types.ImageData", threshold: float) -> "napari.types
         return (data > threshold).astype(int), {}, 'labels'
     par = data.apr.get_parameters()
     meta = {'scale': [par.dz, par.dx, par.dy]}
-    return pyapr.reconstruction.APRSlicer(data.apr, data.parts.copy() > threshold, tree_mode='max'), meta, 'labels'
+    mask = pyapr.ByteParticles(data.parts.copy() > threshold)
+    return pyapr.reconstruction.APRSlicer(data.apr, mask, tree_mode='max'), meta, 'labels'
