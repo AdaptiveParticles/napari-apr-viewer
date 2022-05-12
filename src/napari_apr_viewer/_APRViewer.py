@@ -58,6 +58,7 @@ class APRViewer(QWidget):
         for layer in self.viewer.layers.selection:
             if isinstance(layer.data, pyapr.reconstruction.APRSlicer) and isinstance(layer, napari.layers.Image):
                 # set reconstruction mode
+                old_mode = layer.data.mode
                 layer.data.mode = mode
 
                 # set reconstruction function
@@ -76,5 +77,9 @@ class APRViewer(QWidget):
                     layer.contrast_limits = [0, layer.data.apr.level_max()]
                 else:
                     layer.data.dtype = pyapr.utils.particles_to_type(layer.data.parts)
+                    if old_mode == 'level':
+                        cmin = layer.data.parts.min()
+                        cmax = layer.data.parts.max()
+                        layer.contrast_limits = [cmin, cmax]
 
                 layer.refresh()
