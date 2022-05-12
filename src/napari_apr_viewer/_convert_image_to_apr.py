@@ -8,6 +8,7 @@ if TYPE_CHECKING:
 
 
 class DTypes(Enum):
+    uint8 = 'uint8'
     uint16 = 'uint16'
     float32 = 'float32'
 
@@ -61,18 +62,8 @@ def convert_image_to_apr(
     par.grad_th = grad_threshold
     par.auto_parameters = auto_find_sigma_and_grad_threshold
 
-    converter = pyapr.converter.FloatConverter()
-    converter.set_parameters(par)
-    converter.verbose = True
-
-    apr = pyapr.APR()
-    parts = pyapr.ShortParticles() if data_type.value == 'uint16' else pyapr.FloatParticles()
-
     layer = layer.astype(data_type.value)
-    converter.get_apr(apr, layer)
-    parts.sample_image(apr, layer)
-
-    print('Computational ratio (#pixels / #particles): {:.2f}'.format(apr.computational_ratio()))
+    apr, parts = pyapr.converter.get_apr(layer, params=par, verbose=True)
 
     ldata = pyapr.reconstruction.APRSlicer(apr, parts)
     meta = {'name': output_name,
