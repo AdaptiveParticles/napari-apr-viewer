@@ -74,7 +74,7 @@ def convert_image_to_apr(
 
     print('Computational ratio (#pixels / #particles): {:.2f}'.format(apr.computational_ratio()))
 
-    ldata = pyapr.APRSlicer(apr, parts)
+    ldata = pyapr.reconstruction.APRSlicer(apr, parts)
     meta = {'name': output_name,
             'rgb': False,
             'multiscale': False,

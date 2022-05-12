@@ -43,7 +43,7 @@ class APRViewer(QWidget):
     def _changeRes(self, value: int = 0):
         self.res_label.setText('1:{}'.format(str(2**value)))
         for layer in self.viewer.layers:
-            if isinstance(layer.data, pyapr.APRSlicer):
+            if isinstance(layer.data, pyapr.reconstruction.APRSlicer):
                 value_clamped = min(layer.data.apr.level_max() - 4, value)
 
                 prev_value = layer.data.patch.level_delta
@@ -56,30 +56,25 @@ class APRViewer(QWidget):
     def _changeMode(self, mode: [int, str]):
         mode = mode if isinstance(mode, str) else self.modes[mode]
         for layer in self.viewer.layers:
-            if isinstance(layer.data, pyapr.APRSlicer) and isinstance(layer, napari.layers.Image):
+            if isinstance(layer.data, pyapr.reconstruction.APRSlicer) and isinstance(layer, napari.layers.Image):
                 # set reconstruction mode
                 layer.data.mode = mode
 
                 # set reconstruction function
                 if mode == 'constant':
-                    layer.data.recon = pyapr.numerics.reconstruction.reconstruct_constant
+                    layer.data.recon = pyapr.reconstruction.reconstruct_constant
                 elif mode == 'smooth':
-                    layer.data.recon = pyapr.numerics.reconstruction.reconstruct_smooth
+                    layer.data.recon = pyapr.reconstruction.reconstruct_smooth
                 elif mode == 'level':
-                    layer.data.recon = pyapr.numerics.reconstruction.reconstruct_level
+                    layer.data.recon = pyapr.reconstruction.reconstruct_level
                 else:
-                    raise ValueError('APRArray mode argument must be \'constant\', \'smooth\' or \'level\'')
+                    raise ValueError('APRViewer mode argument must be \'constant\', \'smooth\' or \'level\'')
 
                 # set data type
                 if mode == 'level':
                     layer.data.dtype = np.uint8
                 else:
-                    if isinstance(layer.data.parts, pyapr.FloatParticles):
-                        layer.data.dtype = np.float32
-                    elif isinstance(layer.data.parts, pyapr.LongParticles):
-                        layer.data.dtype = np.uint64
-                    elif isinstance(layer.data.parts, pyapr.ShortParticles):
-                        layer.data.dtype = np.uint16
-                    else:
-                        raise ValueError('parts type not recognized')
+                    layer.data.dtype = pyapr.utils.particles_to_type(layer.data.parts)
+
                 layer.refresh()
+

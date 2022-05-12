@@ -25,7 +25,7 @@ def apr_to_labels(apr, parts, **kwargs):
     if 'scale' not in kwargs:
         par = apr.get_parameters()
         kwargs['scale'] = [par.dz, par.dx, par.dy]
-    return Labels(data=pyapr.APRSlicer(apr, parts, tree_mode='max'), **kwargs)
+    return Labels(data=pyapr.reconstruction.APRSlicer(apr, parts, tree_mode='max'), **kwargs)
 
 
 def apr_to_image(apr, parts, **kwargs):
@@ -56,4 +56,4 @@ def apr_to_image(apr, parts, **kwargs):
     if 'scale' not in kwargs:
         par = apr.get_parameters()
         kwargs['scale'] = [par.dz, par.dx, par.dy]
-    return Image(data=pyapr.APRSlicer(apr, parts), **kwargs)
+    return Image(data=pyapr.reconstruction.APRSlicer(apr, parts), **kwargs)
