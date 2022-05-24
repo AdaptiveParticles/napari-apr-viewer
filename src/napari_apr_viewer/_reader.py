@@ -76,7 +76,7 @@ def apr_reader(path: Union[str, List[str]]) -> List[Tuple[Any, Dict, str]]:
         layer_types = ['labels' if (('label' in name or 'segmentation' in name)
                                     and not isinstance(parts, pyapr.FloatParticles))
                        else 'image' for parts, name in particle_data]
-        return [(pyapr.data_containers.APRSlicer(apr, parts, tree_mode='max' if ltype == 'labels' else 'mean'),
+        return [(pyapr.reconstruction.APRSlicer(apr, parts, tree_mode='max' if ltype == 'labels' else 'mean'),
                  '{}:{}'.format(base_name, name),
                  ltype)
                 for (parts, name), ltype in zip(particle_data, layer_types)]

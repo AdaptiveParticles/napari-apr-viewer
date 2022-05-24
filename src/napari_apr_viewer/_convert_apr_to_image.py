@@ -12,7 +12,7 @@ def convert_apr_to_image(
         output_name: str = 'reconstruction_result'
 ) -> "napari.types.LayerDataTuple":
     """Reconstruct pixel image from an APR in a given layer"""
-    if not isinstance(layer, pyapr.APRSlicer):
+    if not isinstance(layer, pyapr.reconstruction.APRSlicer):
         print('Layer data is already a pixel image')
         return None
     par = layer.apr.get_parameters()

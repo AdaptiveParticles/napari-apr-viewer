@@ -52,7 +52,7 @@ def napari_write_image(path: str, data: List[Tuple[Any, Dict, str]]) -> List[Uni
         The path(s) of successfully written data, or None if data could not be written.
     """
     def write_apr(path, data):
-        if isinstance(data, pyapr.APRSlicer):
+        if isinstance(data, pyapr.reconstruction.APRSlicer):
             if not path.endswith('.apr'):
                 path = path + '.apr'
             pyapr.io.write(path, data.apr, data.parts)
