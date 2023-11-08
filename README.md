@@ -7,21 +7,47 @@
 [![codecov](https://codecov.io/gh/AdaptiveParticles/napari-apr-viewer/branch/main/graph/badge.svg)](https://codecov.io/gh/AdaptiveParticles/napari-apr-viewer)
 [![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/napari-apr-viewer)](https://napari-hub.org/plugins/napari-apr-viewer)
 
-A simple plugin to view APR images in napari
+A simple plugin to create and view APR images in napari
+
+## Usage
+
+To get started, open an image of your choice (2D or 3D grayscale) in napari and open the `convert_image_to_apr` panel. Select the image layer to convert, an appropriate data type, and hit `Run`. 
+
+**Note:** choosing a data type smaller than the input type may lead to overflow and thus erroneous results.
+
+Conversion parameters can often be left to their default values, thanks to the automatic parameter tuning. For very noisy images, it is sometimes useful to increase the `smoothing` parameter. In order to get a more (or less) aggressive adaptation, change the `relative error` parameter.
+
+![conversion.png](https://github.com/AdaptiveParticles/napari-apr-viewer/raw/main/docs/conversion.png)
+
+To save the result to file, simply save the newly created layer using the `File` menu. We use the extension `.apr`, although the file is actually written in `hdf5` format (and can be opened/explored as such). In this example, the APR is roughly 80 times smaller than the original image on disk. APR files can be opened directly in napari, e.g. by drag and drop.
+
+![apr_file.png](https://github.com/AdaptiveParticles/napari-apr-viewer/raw/main/docs/apr_file.png)
+
+To better understand the workings of the APR on your data, you can use the `APR Viewer` panel to change the `View mode` for a selected APR layer to `level`. This shows you a visualization of the adaptive resolution. Particles in the brightest regions correspond exactly to pixels (lossless), while each shade darker corresponds to downsampling by a factor of 2 in each dimension.
+
+![view_level.png](https://github.com/AdaptiveParticles/napari-apr-viewer/raw/main/docs/view_level.png)
+
+The `Downsample` slider can be used to reduce the resolution of the displayed data for the selected layer. This can be used to explore large volumes in 3D, where rendering the full data requires too much memory. 
+
+**Note:** We do not offer APR-native rendering at this time, so this step will reconstruct the entire pixel volume (at the selected resolution). Thus, for large volumes, be sure to increase the downsampling before toggling the 3D viewer. 
+
+![view_3D.png](https://github.com/AdaptiveParticles/napari-apr-viewer/raw/main/docs/view_3D.png)
+
+![view_3D_ds.png](https://github.com/AdaptiveParticles/napari-apr-viewer/raw/main/docs/view_3D_downsampled.png)
+
+_The data shown in these examples was taken from the Platynereis-ISH-Nuclei-CBG dataset available [here](https://github.com/juglab/EmbedSeg/releases)._
+
+&nbsp;
 
 ----------------------------------
 
 This [napari] plugin was generated with [Cookiecutter] using [@napari]'s [cookiecutter-napari-plugin] template.
-
 
 ## Installation
 
 You can install `napari-apr-viewer` via [pip]:
 
     pip install napari-apr-viewer
-
-
-
 
 ## Contributing
 

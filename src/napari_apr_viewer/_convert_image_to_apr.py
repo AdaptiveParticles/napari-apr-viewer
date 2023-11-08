@@ -35,12 +35,12 @@ class DTypes(Enum):
                                                               'are ignored in this process.'},
                output_name={'tooltip': 'Name of the resulting napari image layer.'})
 def convert_image_to_apr(
-        layer: "napari.types.ImageData",
+        image: "napari.types.ImageData",
         data_type: DTypes,
         relative_error: float = 0.1,
-        voxel_size_dim0: float = 1.0,
-        voxel_size_dim1: float = 1.0,
-        voxel_size_dim2: float = 1.0,
+        voxel_size_z: float = 1.0,
+        voxel_size_y: float = 1.0,
+        voxel_size_x: float = 1.0,
         smoothing: float = 1.0,
         intensity_threshold: float = 0.0,
         sigma_threshold: float = 0.0,
@@ -52,9 +52,9 @@ def convert_image_to_apr(
     Convert a pixel image in a given layer to an APR.
     """
     par = pyapr.APRParameters()
-    par.dz = voxel_size_dim0
-    par.dx = voxel_size_dim1
-    par.dy = voxel_size_dim2
+    par.dz = voxel_size_z
+    par.dx = voxel_size_y
+    par.dy = voxel_size_x
     par.gradient_smoothing = smoothing
     par.Ip_th = intensity_threshold
     par.rel_error = relative_error
@@ -62,8 +62,8 @@ def convert_image_to_apr(
     par.grad_th = grad_threshold
     par.auto_parameters = auto_find_sigma_and_grad_threshold
 
-    layer = layer.astype(data_type.value)
-    apr, parts = pyapr.converter.get_apr(layer, params=par, verbose=True)
+    image = image.astype(data_type.value)
+    apr, parts = pyapr.converter.get_apr(image, params=par, verbose=True)
 
     ldata = pyapr.reconstruction.APRSlicer(apr, parts)
     meta = {'name': output_name,

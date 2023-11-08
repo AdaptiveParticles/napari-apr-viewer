@@ -74,7 +74,7 @@ class APRViewer(QWidget):
                 # set data type
                 if mode == 'level':
                     layer.data.dtype = np.uint8
-                    layer.contrast_limits = [0, layer.data.apr.level_max()]
+                    layer.contrast_limits = [0, layer.data.apr.level_max() + 1]
                 else:
                     layer.data.dtype = pyapr.utils.particles_to_type(layer.data.parts)
                     if old_mode == 'level':
